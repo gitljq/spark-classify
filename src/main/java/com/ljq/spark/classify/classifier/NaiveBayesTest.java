@@ -96,11 +96,11 @@ public class NaiveBayesTest {
 
         List<Result> dataResults = new ArrayList<>();
         for (Row row : rowList) {
-            Double category = row.getAs("category");
+            Long category = row.getAs("category");
             SparseVector sparseVector = row.getAs("features");
             Vector features = Vectors.dense(sparseVector.toArray());
             double predict = model.predict(features);
-            dataResults.add(new Result(category, predict));
+            dataResults.add(new Result(category, (long) predict));
         }
 
         Integer successNum = 0;

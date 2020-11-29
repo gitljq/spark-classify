@@ -8,11 +8,6 @@ import java.util.List;
  *
  */
 public class FileUtils {
-
-    public static void main(String[] args) {
-        System.out.println(getClassPath());
-    }
-
     /**
      * get project path
      * @return

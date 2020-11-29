@@ -5,9 +5,9 @@ package com.ljq.spark.classify.dto;
  */
 public class Result {
 
-    private Double category;//text category
+    private Long category;//text category
 
-    private Double predict;//predict category
+    private Long predict;//predict category
 
     public boolean isCorrect(){
         return category.equals(predict);
@@ -16,24 +16,24 @@ public class Result {
     public Result() {
     }
 
-    public Result(Double category, Double predict) {
+    public Result(Long category, Long predict) {
         this.category = category;
         this.predict = predict;
     }
 
-    public Double getCategory() {
+    public Long getCategory() {
         return category;
     }
 
-    public void setCategory(Double category) {
+    public void setCategory(Long category) {
         this.category = category;
     }
 
-    public Double getPredict() {
+    public Long getPredict() {
         return predict;
     }
 
-    public void setPredict(Double predict) {
+    public void setPredict(Long predict) {
         this.predict = predict;
     }
 }
