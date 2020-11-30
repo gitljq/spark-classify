@@ -13,7 +13,7 @@ import org.apache.hadoop.fs.FileSystem
 object main {
   def main(args: Array[String]): Unit = {
     val hbaseUtil = new HbaseUtil
-//    hbaseUtil.createTable("news","classify_test","f",96)
+    hbaseUtil.createTable("news","classify_test","f",96)
     println(hbaseUtil.getRowData("news:classify_test", "11709", "f", NaiveBayesTest.col))
   }
 }

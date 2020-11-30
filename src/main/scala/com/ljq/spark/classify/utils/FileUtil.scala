@@ -1,16 +1,20 @@
 package com.ljq.spark.classify.utils
 
-import java.io.{BufferedReader, File, FileInputStream, FileReader, IOException, InputStream, InputStreamReader, LineNumberReader}
+import java.io._
 import java.util
-import java.util.{ArrayList, List}
 
 /**
- * @Description:
+ * @Description: 文件处理类
  * @Author: ljq_dmr
  * @Date: 2020/11/29 11:41
  */
 class FileUtil {
 
+  /**
+   * 根据流按行读取
+   * @param inputStream
+   * @return
+   */
   def readLine(inputStream: InputStream):util.ArrayList[String]= {
     val lineList = new util.ArrayList[String]()
     val inReader = new InputStreamReader(inputStream)
@@ -25,6 +29,11 @@ class FileUtil {
     lineList
   }
 
+  /**
+   * 获取全部行数
+   * @param inputStream
+   * @return
+   */
   def getLineNumber(inputStream: InputStream): Long = {
     try {
       val reader = new InputStreamReader(inputStream)

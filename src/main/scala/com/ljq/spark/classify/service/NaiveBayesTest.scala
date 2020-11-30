@@ -56,9 +56,9 @@ object NaiveBayesTest {
 
   def batchTestModel(spark: SparkSession,hbaseUtil: HbaseUtil, path: String) = {
     val test: Dataset[Row] = spark.read.json(path)
+
     val featurizedData: Dataset[Row] = hashingTF.transform(test)
     val rescaledData: Dataset[Row] = idfModel.transform(featurizedData)
-
     val rowList: util.List[Row] = rescaledData.select("id","category", "features").javaRDD.collect
 
     val dataResults = new util.ArrayList[Result]
@@ -71,6 +71,7 @@ object NaiveBayesTest {
       val predict: Long = model.predict(features).toLong
       dataResults.add(new Result(category, predict))
       val textList: util.Map[String, String] = hbaseUtil.getRowData("news:classify", id+"", "f", Array("text"))
+      //得到测试集原本分类是预测分类写如到hbase
       hbaseUtil.putData("news:classify_test",id+"","f",col,Array(id+"",textList.get("text"),category+"",predict+""))
     }
 
@@ -123,6 +124,7 @@ object NaiveBayesTest {
       System.exit(-1)
     }
 
+    //加载分类标签到map
     val labelInputStream: InputStream = hdfsUtil.getFile(fileSystem, DataETL.LABEL_PATH)
     val fileUtil = new FileUtil
     val jsonStr = fileUtil.readLine(labelInputStream).get(0)
@@ -131,6 +133,7 @@ object NaiveBayesTest {
 
     val spark: SparkSession = SparkSession.builder.appName("NaiveBayes").master("local").getOrCreate
 
+    //加载模型
     hashingTF= HashingTF.load(DataETL.HDFS_PATH.concat(DataETL.TF_PATH))
     idfModel= IDFModel.load(DataETL.HDFS_PATH.concat(DataETL.IDF_PATH))
     model= NaiveBayesModel.load(spark.sparkContext, DataETL.HDFS_PATH.concat(DataETL.MODEL_PATH))

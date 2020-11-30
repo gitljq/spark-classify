@@ -7,7 +7,7 @@ import org.ansj.domain.{Result, Term}
 import org.ansj.splitWord.analysis.NlpAnalysis
 
 /**
- * @Description:
+ * @Description: 分词类
  * @Author: ljq_dmr
  * @Date: 2020/11/29 15:43
  */

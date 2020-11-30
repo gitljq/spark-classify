@@ -15,6 +15,12 @@ import scala.collection.mutable.ListBuffer
  */
 class HdfsUtil {
 
+  /**
+   * 向hdfs中追加数据
+   * @param fileSystem
+   * @param hdfsPath
+   * @param dataList
+   */
   def appendBatchText(fileSystem: FileSystem,hdfsPath:Path,dataList:ListBuffer[String]): Unit ={
     val apend: FSDataOutputStream = fileSystem.append(hdfsPath)
     dataList.foreach(data=>{

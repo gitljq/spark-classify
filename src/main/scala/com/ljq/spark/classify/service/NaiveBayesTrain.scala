@@ -37,6 +37,7 @@ object NaiveBayesTrain {
     val fileSystem: FileSystem = FileSystem.get(configuration)
     val hdfsUtil = new HdfsUtil
 
+    //初始化目录
     initDir(fileSystem,hdfsUtil,DataETL.MODEL_PATH)
     initDir(fileSystem,hdfsUtil,DataETL.TF_PATH)
     initDir(fileSystem,hdfsUtil,DataETL.IDF_PATH)
@@ -72,10 +73,9 @@ object NaiveBayesTrain {
 
     System.out.println("============开始训练============")
     val model: NaiveBayesModel = NaiveBayes.train(trainDataRdd)
-    model.save(spark.sparkContext, DataETL.HDFS_PATH.concat(DataETL.MODEL_PATH)) //save model
-
+    //保存模型
+    model.save(spark.sparkContext, DataETL.HDFS_PATH.concat(DataETL.MODEL_PATH))
     hashingTF.save(DataETL.HDFS_PATH.concat(DataETL.TF_PATH))
-
     idfModel.save(DataETL.HDFS_PATH.concat(DataETL.IDF_PATH))
 
 

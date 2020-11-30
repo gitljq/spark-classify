@@ -10,7 +10,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.hadoop.hbase.{CellUtil, HBaseConfiguration, TableName}
 
 /**
- * @Description:
+ * @Description: hbase操作类
  * @Author: ljq_dmr
  * @Date: 2020/11/29 17:13
  */
@@ -21,6 +21,14 @@ class HbaseUtil {
   conf.set("zookeeper.znode.parent", "/hbase")
   val connection:Connection = ConnectionFactory.createConnection(conf);
 
+  /**
+   * 写入数据
+   * @param tableName
+   * @param id
+   * @param familyName
+   * @param columns
+   * @param values
+   */
   def putData(tableName: String, id: String, familyName: String, columns: Array[String], values: Array[String]): Unit = {
     val rowKey: String = getRowKey(id)
     var table: Table = null
@@ -39,6 +47,14 @@ class HbaseUtil {
     } finally close(null, null, table)
   }
 
+  /**
+   * 读取数据
+   * @param tableName
+   * @param id
+   * @param family
+   * @param columns
+   * @return
+   */
   def getRowData(tableName: String, id: String, family: String, columns: Array[String]): util.Map[String, String] = {
     val rowKey: String = getRowKey(id)
     //返回的键值对
@@ -100,6 +116,13 @@ class HbaseUtil {
   }
 
 
+  /**
+   * 创建表
+   * @param namespace
+   * @param tableName
+   * @param familyName
+   * @param regNum
+   */
   def createTable(namespace: String, tableName: String, familyName: String,regNum: Integer): Unit = {
     var admin: Admin = null
     try { // 获取HBase管理员对象

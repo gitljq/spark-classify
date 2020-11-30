@@ -53,8 +53,10 @@ object DataETL {
 
   def main(args: Array[String]): Unit = {
     val fileUtil = new FileUtil
+    //加载停用词
     val stopWordList = fileUtil.readLine(new FileInputStream(new File(STOP_WORD_PATH)))
-    val spiltRate = 0.8 //solit rate
+
+    val spiltRate = 0.8
 
     val configuration: Configuration = new Configuration()
     configuration.set("fs.defaultFS", HDFS_PATH)
@@ -62,27 +64,34 @@ object DataETL {
     val fileSystem: FileSystem = FileSystem.get(configuration)
     val hdfs = new HdfsUtil
 
+    //初始化文件
     initFile(fileSystem, hdfs, DATA_TRAIN_PATH)
     initFile(fileSystem,hdfs,DATA_TEST_PATH)
     initFile(fileSystem, hdfs, LABEL_PATH)
 
     val hbaseUtil = new HbaseUtil
 
+    //获取所有的分类文件
     val fileNameList: ListBuffer[String] = hdfs.getHDFSFilesName(fileSystem, NEWS_DATA_PATH)
 
     val labels = new java.util.HashMap[Integer, String]
 
+    //类别代码
     var count:Integer = 0
+    //自增长id
     var allCount:Integer = 0
     fileNameList.foreach(fileName=> {
       println("正在对".concat(fileName).concat("分词处理"))
       count = count+1
       labels.put(count, fileName.replace(".txt", ""))
+      //获取每个分类下的数据量
       val inputStream: InputStream = hdfs.getFile(fileSystem, NEWS_DATA_PATH+fileName)
       val lineCount: Long = fileUtil.getLineNumber(inputStream)
       inputStream.close()
+      //得到训练的量
       val spilt = lineCount * spiltRate
 
+      //读取数据
       val stream: InputStream = hdfs.getFile(fileSystem, NEWS_DATA_PATH + fileName)
       val inReader = new InputStreamReader(stream)
       val reader = new BufferedReader(inReader)
@@ -119,6 +128,7 @@ object DataETL {
         }
         line=reader.readLine()
       }
+      //批量写入，这里单条写入性能极差，由于数据量少直接一次写入
       hdfs.appendBatchText(fileSystem, new Path(DATA_TEST_PATH), testDataList)
       hdfs.appendBatchText(fileSystem, new Path(DATA_TRAIN_PATH), trainDataList)
       reader.close()
@@ -126,6 +136,7 @@ object DataETL {
       stream.close()
     })
 
+    //写入类别的对照关系
     hdfs.appendText(fileSystem,new Path(LABEL_PATH),JSON.toJSONString(labels, SerializerFeature.EMPTY: _*))
     println("Data processing successfully !")
     println("=======================================================")
